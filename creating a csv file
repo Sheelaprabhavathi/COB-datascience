@@ -1,0 +1,25 @@
+import pandas as pd
+import requests
+api_url1="https://restcountries.com/v3/all"
+response=requests.get(api_url1)
+if response.status_code == 200:
+    #extract the json data from the response
+    data=response.json()
+    #intilializing an empty list to a=store data
+    country_data=[]
+    #loop through data and extract relevant information
+    for country_info in data:
+        country_data.append({
+            "Name":country_info["name"]["common"],
+            "capital":country_info.get("capital","N/A"),
+            "Region":country_info.get("region","N/A"),
+            "Population":country_info.get("population","N/A"),
+            "Area (sq.km)":country_info.get("area","N/A"),
+        })
+        #create a pandas dataframe from created data
+        df=pd.DataFrame(country_data)
+        #save the dataframe as a csv file
+        df.to_csv("countries_data.csv",index=False)
+        print("CSV file 'countries_data.csv' has been created")
+    else:
+        print("Failed to fetch data from API")
